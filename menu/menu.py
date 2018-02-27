@@ -6,7 +6,7 @@ class ArrowMenu():
         if options is None:
             raise ValueError("Argument options is required")
         self.screen = None
-        self.options = options
+        self.options = list(enumerate(options))
         self.search_enabled = search_enabled
         self.arrow = arrow
         self.title = title
@@ -29,22 +29,25 @@ class ArrowMenu():
         choosen_line = "{} {:>5}. {:<10}"
         normal_line = " {:>5}. {:<10} "
         print(self.screen.getmaxyx)
-        f_options = list(filter(lambda x: self.input in x, self.options))
+        f_options = self.filtered_options()
         f_options = f_options[self.offset: min(len(f_options), self.offset+self.limit)]
         options_len = len(f_options)
         self.screen.addstr(0, 0, self.title, curses.A_BOLD)
         for i, _ in enumerate(f_options):
             if self.position == i:
-                self.screen.addstr(i + 2, 0, choosen_line.format(self.arrow, i + 1, f_options[i]))
+                self.screen.addstr(i + 2, 0, choosen_line.format(self.arrow, i + 1, f_options[i][1]))
             else:
-                self.screen.addstr(i + 2, 0, normal_line.format(i + 1, f_options[i]))
+                self.screen.addstr(i + 2, 0, normal_line.format(i + 1, f_options[i][1]))
         if self.search_enabled:
             self.screen.addstr(options_len + 3, 0,
                                "search: {}".format(self.input),
                                curses.A_UNDERLINE)
 
+    def filtered_options(self):
+        return list(filter(lambda x: self.input in x[1], self.options))
+
     def _on_key_up(self):
-        f_options = list(filter(lambda x: self.input in x, self.options))
+        f_options = self.filtered_options()
         len_options = len(f_options)
         if len_options < self.limit:
             self.position = (self.position - 1) % len_options
@@ -54,7 +57,7 @@ class ArrowMenu():
             self.offset = self.offset - 1 if self.offset - 1 > 0 else 0
 
     def _on_key_down(self):
-        f_options = list(filter(lambda x: self.input in x, self.options))
+        f_options = self.filtered_options()
         len_options = len(f_options)
         if len_options < self.limit:
             self.position = (self.position + 1) % len_options
@@ -72,7 +75,7 @@ class ArrowMenu():
             while True:
                 char = self.screen.getch()
                 if char == ord("\n"):
-                    return self.position
+                    return self.filtered_options()[self.position][0]
                 elif char == 127:
                     self.input = self.input[:-1]
                     self.screen.clrtoeol()
@@ -90,9 +93,9 @@ class ArrowMenu():
             curses.endwin()
 
 if __name__ == '__main__':
-    options = [str(i + 1) for i in range(30)]
+    choices = [str(i + 1) for i in range(30)]
     menu = ArrowMenu("Which pill ?",
-                options=options,
+                options=choices,
                 search_enabled=True)
     choosen = menu.show()
-    print("\nYou choose", options[choosen], "\n")
+    print("\nYou choose", choices[choosen], "\n")
