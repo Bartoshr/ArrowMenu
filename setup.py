@@ -2,13 +2,13 @@ from distutils.core import setup
 
 setup(
     name='ArrowMenu',
-    version='1.0',
+    version='0.5',
     author='Bartosz Rumiński',
     author_email='bartoshx@gmail.com',
-    packages=['menu'],
+    packages=['ArrowMenu'],
     scripts=[],
-    url='http://pypi.python.org/pypi/Menu/',
+    url='http://github.com/bartoshr/ArrowMenu',
     license='LICENSE.txt',
-    description='Easily create command-line menus',
+    description='Command-line menu with search option',
     long_description=open('README.md').read(),
 )

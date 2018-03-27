@@ -93,9 +93,9 @@ class ArrowMenu():
             curses.endwin()
 
 if __name__ == '__main__':
-    choices = [str(i + 1) for i in range(30)]
+    choices = ["blue", "red"]
     menu = ArrowMenu("Which pill ?",
-                options=choices,
-                search_enabled=True)
+                     options=choices,
+                     search_enabled=True)
     choosen = menu.show()
     print("\nYou choose", choices[choosen], "\n")
