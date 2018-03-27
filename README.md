@@ -1,6 +1,6 @@
 # Menu
 
-Easily create command-line arrow key selection menus .
+Create command-line arrow key selection menus .
 
 
 Install
@@ -22,13 +22,13 @@ The Menu constructor arguments are all optional. The arguments are options, titl
 Open the Menu
 -
 
-    menu = Menu()
+    menu = ArrowMenu()
     menu.show()
 
 Edit the menu
 -
 
-    menu = Menu()
+    menu = ArrowMenu()
     menu.options([("new option name", newOptionHandler)])
     menu.title = "Title"
     menu.arrow = ">>"
@@ -36,4 +36,4 @@ Edit the menu
 Testing
 -
 
-    python3 -m unittest test/tests.py
+    pytest

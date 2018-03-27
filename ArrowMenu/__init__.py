@@ -1,1 +1,1 @@
-from .menu import ArrowMenu
+from .ArrowMenu import ArrowMenu

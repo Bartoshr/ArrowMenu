@@ -1,8 +1,8 @@
 from hecate.hecate import Runner
 import sys
 import os
-sys.path.append(os.path.abspath('./ArrowMenu'))
-from menu import ArrowMenu
+sys.path.append(os.path.abspath('ArrowMenu'))
+from ArrowMenu import ArrowMenu
 
 def test_move_cursor_down():
     with Runner("python3", __file__) as h:
@@ -24,6 +24,13 @@ def test_search_item():
         h.press("3")
         assert ">     1. 13" in h.screenshot()
 
+def test_escape_exit():
+    with Runner("python3", __file__) as h:
+        h.await_text("Which pill ?")
+        h.press("Escape")
+        h.press("Escape")
+        h.await_exit()
+
 
 if __name__ == "__main__":
     choices = [str(i + 1) for i in range(30)]
@@ -31,4 +38,7 @@ if __name__ == "__main__":
                      options=choices,
                      search_enabled=True)
     choosen = menu.show()
-    print("\nYou choose", choices[choosen], "\n")
+    if choosen:
+        print("\nYou choose", choices[choosen], "\n")
+    else:
+        print("Exited")

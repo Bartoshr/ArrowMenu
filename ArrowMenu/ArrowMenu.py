@@ -1,6 +1,10 @@
 import curses
 
 class ArrowMenu():
+
+    choosen_line = "{} {:>5}. {:<10}"
+    normal_line = " {:>5}. {:<10} "
+
     def __init__(self, title, options=None,
                  arrow=">", search_enabled=False):
         if options is None:
@@ -26,8 +30,6 @@ class ArrowMenu():
 
     def _print_menu(self):
         self.screen.clear()
-        choosen_line = "{} {:>5}. {:<10}"
-        normal_line = " {:>5}. {:<10} "
         print(self.screen.getmaxyx)
         f_options = self.filtered_options()
         f_options = f_options[self.offset: min(len(f_options), self.offset+self.limit)]
@@ -35,9 +37,9 @@ class ArrowMenu():
         self.screen.addstr(0, 0, self.title, curses.A_BOLD)
         for i, _ in enumerate(f_options):
             if self.position == i:
-                self.screen.addstr(i + 2, 0, choosen_line.format(self.arrow, i + 1, f_options[i][1]))
+                self.screen.addstr(i + 2, 0, ArrowMenu.choosen_line.format(self.arrow, i + 1, f_options[i][1]))
             else:
-                self.screen.addstr(i + 2, 0, normal_line.format(i + 1, f_options[i][1]))
+                self.screen.addstr(i + 2, 0, ArrowMenu.normal_line.format(i + 1, f_options[i][1]))
         if self.search_enabled:
             self.screen.addstr(options_len + 3, 0,
                                "search: {}".format(self.input),
@@ -79,6 +81,8 @@ class ArrowMenu():
                 elif char == 127:
                     self.input = self.input[:-1]
                     self.screen.clrtoeol()
+                elif char == 27:
+                    return None
                 elif char == curses.KEY_UP:
                     self._on_key_up()
                 elif char == curses.KEY_DOWN:
@@ -98,4 +102,7 @@ if __name__ == '__main__':
                      options=choices,
                      search_enabled=True)
     choosen = menu.show()
-    print("\nYou choose", choices[choosen], "\n")
+    if choosen:
+        print("\nYou choose", choices[choosen], "\n")
+    else:
+        print("Exited")
