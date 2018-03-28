@@ -6,7 +6,7 @@ Create command-line arrow key selection menus .
 Install
 -
 
-    pip install ArrowMenu
+    python setup.py install
 
 Create the Menu
 -
