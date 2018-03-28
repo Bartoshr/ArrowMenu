@@ -32,7 +32,7 @@ class ArrowMenu():
         self.screen.clear()
         print(self.screen.getmaxyx)
         f_options = self.filtered_options()
-        f_options = f_options[self.offset: min(len(f_options), self.offset+self.limit)]
+        f_options = self.offseted_options(f_options)
         options_len = len(f_options)
         self.screen.addstr(0, 0, self.title, curses.A_BOLD)
         for i, _ in enumerate(f_options):
@@ -47,6 +47,10 @@ class ArrowMenu():
 
     def filtered_options(self):
         return list(filter(lambda x: self.input in x[1], self.options))
+
+    def offseted_options(self, options):
+        offset = self.offset if input != "" else 0
+        return options[offset: min(len(options), offset+self.limit)]
 
     def _on_key_up(self):
         f_options = self.filtered_options()
@@ -77,18 +81,25 @@ class ArrowMenu():
             while True:
                 char = self.screen.getch()
                 if char == ord("\n"):
-                    return self.filtered_options()[self.position][0]
+                    options = self.filtered_options()
+                    options = self.offseted_options(options)
+                    return options[self.position][0]
                 elif char == 127:
                     self.input = self.input[:-1]
                     self.screen.clrtoeol()
                 elif char == 27:
+                    self.screen.nodelay(True)
+                    self.screen.getch()
                     return None
+                    self.screen.nodelay(False)
                 elif char == curses.KEY_UP:
                     self._on_key_up()
                 elif char == curses.KEY_DOWN:
                     self._on_key_down()
                 elif char < 255 and self.search_enabled:
                     self.input += chr(char)
+                    self.offset = 0
+                    self.position = 0
                 self._print_menu()
         finally:
             curses.nocbreak()
@@ -102,7 +113,7 @@ if __name__ == '__main__':
                      options=choices,
                      search_enabled=True)
     choosen = menu.show()
-    if choosen:
+    if choosen != None:
         print("\nYou choose", choices[choosen], "\n")
     else:
         print("Exited")

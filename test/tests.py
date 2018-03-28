@@ -29,7 +29,36 @@ def test_escape_exit():
         h.await_text("Which pill ?")
         h.press("Escape")
         h.press("Escape")
-        h.await_exit()
+        h.await_exit(timeout=5)
+
+def test_long_cursor_down():
+    with Runner("python3", __file__) as h:
+        h.await_text("Which pill ?")
+        for _ in range(30):
+            h.press("Down")
+        assert ">    19. 30" in h.screenshot()
+
+def test_return_correct_first_value():
+    with Runner("python3", __file__) as h:
+        h.await_text("Which pill ?")
+        h.press("Enter")
+        assert "You choose 1" in h.screenshot()
+
+def test_return_correct_last_value():
+    with Runner("python3", __file__) as h:
+        h.await_text("Which pill ?")
+        for _ in range(30):
+            h.press("Down")
+        h.press("Enter")
+        assert "You choose 30" in h.screenshot()
+
+def test_search_after_moved_cursor_down():
+    with Runner("python3", __file__) as h:
+        h.await_text("Which pill ?")
+        for _ in range(30):
+            h.press("Down")
+        h.press("1")
+        assert "1. 1" in h.screenshot()
 
 
 if __name__ == "__main__":
@@ -38,7 +67,7 @@ if __name__ == "__main__":
                      options=choices,
                      search_enabled=True)
     choosen = menu.show()
-    if choosen:
+    if choosen != None:
         print("\nYou choose", choices[choosen], "\n")
     else:
         print("Exited")

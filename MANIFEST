@@ -2,9 +2,7 @@
 LICENSE.txt
 MANIFEST.in
 README.md
-README.txt
 setup.py
-menu/__init__.py
-menu/keyboard.py
-menu/menu.py
+ArrowMenu/ArrowMenu.py
+ArrowMenu/__init__.py
 test/tests.py
